@@ -32,6 +32,7 @@
 12.1. Finding Images
 13. Dockerfile
 14. References
+15. Create a docker image/container with same file rights as host user
 ```
 
 ## 1. Docker Architecture
@@ -359,3 +360,17 @@ docker build -t name-of-result .
 2. http://apachebooster.com/kb/wp-content/uploads/2017/09/docker-architecture.png
 3. https://github.com/wsargent/docker-cheat-sheet#why-docker
 4. http://extremeautomation.io/img/cheatsheets/cheat_sheet_docker_page_1.png
+
+
+## 15.  Create a docker image/container with same file rights as host user
+
+By default, our docker containers run as the root user. Files created or modified by the container will thus become owned by the root user, even after quitting the container.
+To avoid this problem, it is necessary to run the container using a non-root user.
+
+If the host machine user has a UID other than 1000 (or 0, for root), the user should specify their UID when running docker, e.g.
+
+docker run -d -P -v $(pwd):/home/$USER/foo \
+  -e USER=$USER  -e USERID=$UID rocker/rstudio
+to avoid changing the permissions in the linked volume on the host
+
+
